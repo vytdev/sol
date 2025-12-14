@@ -1,0 +1,7 @@
+# editor files
+*~
+.*.swp
+
+# built files
+sol
+*.o
