@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "util.h"
+#include "lexer.h"
 
 
 int main(int argc, char **argv)
@@ -17,7 +18,19 @@ int main(int argc, char **argv)
     return 1;
   }
 
-  fwrite(buf, 1, len, stdout);
+  struct Lexer lex = LEXER_INIT;
+  lex.src = buf;
+  lex.len = len;
+
+  // print tokens (temporary)
+  struct Token tok;
+  do {
+    tok = solL_consume(&lex);
+    printf("ty%d ln%d col%d: ", tok.type, tok.line, tok.col);
+    for (int i = 0; i < tok.len; i++) fputc(tok.start[i], stdout);
+    fputc('\n', stdout);
+  } while (tok.type != T_EOF);
+
   free(buf);
   return 0;
 }
