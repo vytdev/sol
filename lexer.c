@@ -28,7 +28,7 @@ struct Token solL_tokenize(struct Lexer *lex)
   char ch;
   while (1) {
     // skip initial whitespace
-    while (is_wspace(ch = lex->src[lex->pos]) && lex->pos < lex->len)
+    while (lex->pos < lex->len && (ch = lex->src[lex->pos], is_wspace(ch)))
       solL_increment(lex, ch);
 
     struct Token tok = TOKEN_INIT;
@@ -45,7 +45,7 @@ struct Token solL_tokenize(struct Lexer *lex)
     }
 
     // unknown token
-    while (!is_wspace(ch = lex->src[lex->pos]) && lex->pos < lex->len) {
+    while (lex->pos < lex->len && (ch = lex->src[lex->pos], !is_wspace(ch))) {
       solL_increment(lex, ch);
       tok.len++;
     }
