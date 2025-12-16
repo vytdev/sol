@@ -9,10 +9,10 @@ static inline void solL_increment(struct Lexer *lex, char ch)
   lex->pos++;
   switch (ch) {
     case LF:
-      lex->col = 1;
+      lex->line++;
       /* fallthrough */
     case CR:
-      lex->line++;
+      lex->col = 1;
       break;
     case TAB:
       lex->col += TABSTOP - (lex->col % TABSTOP);
