@@ -58,6 +58,16 @@ struct Token solL_tokenize(struct Lexer *lex)
       return tok;
     }
 
+    // numeric token
+    if (is_digit(ch)) {
+      while (for_ch(is_digit(ch))) {
+        solL_increment(lex, ch);
+        tok.len++;
+      }
+      tok.type = T_NUMBER;
+      return tok;
+    }
+
     // unknown token
     while (for_ch(!is_wspace(ch))) {
       solL_increment(lex, ch);

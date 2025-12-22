@@ -26,6 +26,7 @@ struct Lexer {
 #define T_UNKNOWN         (-1)
 #define T_EOF               0
 #define T_IDENTIFIER        1
+#define T_NUMBER            2
 
 #define TOKEN_INIT ((struct Token){NULL,0,0,0,0,T_INVALID})
 #define LEXER_INIT ((struct Lexer){TOKEN_INIT,TOKEN_INIT,NULL,0,1,1,0})
