@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "util.h"
 #include "lexer.h"
+#include "parser.h"
 
 
 int main(int argc, char **argv)
@@ -22,13 +23,9 @@ int main(int argc, char **argv)
   lex.src = buf;
   lex.len = len;
 
-  // print tokens (temporary)
-  token_t tok;
-  do {
-    tok = lexer_consume(&lex);
-    printf("ty%d ln%d col%d:\n", tok.type, tok.line, tok.col);
-    print_token(&tok, lex.len);
-  } while (tok.type != T_EOF);
+  parser_t parser = PARSER_INIT;
+  uint64_t val = parse_int(&parser, &lex);
+  printf("parsed: %lu\n", val);
 
   free(buf);
   return 0;

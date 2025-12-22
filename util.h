@@ -17,4 +17,9 @@ char *readfile(char *path, size_t *len);
  */
 void print_token(token_t *tok, int len);
 
+/**
+ * print a message with token.
+ */
+void msgtok(token_t *tok, lexer_t *lex, char *fmt, ...);
+
 #endif /* UTIL_H_ */

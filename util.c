@@ -1,5 +1,6 @@
 #include "util.h"
 #include "char.h" /* TABSTOP */
+#include <stdarg.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -62,4 +63,14 @@ void print_token(token_t *tok, int len)
   for (int i = 1; i < tok->col; i++) fputc(' ', stdout);
   for (int i = 0; i < tok->len; i++) fputc('^', stdout);
   fputc('\n', stdout);
+}
+
+
+void msgtok(token_t *tok, lexer_t *lex, char *fmt, ...)
+{
+  va_list args;
+  va_start(args, fmt);
+  vprintf(fmt, args);
+  va_end(args);
+  print_token(tok, lex->len);
 }
