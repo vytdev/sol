@@ -16,5 +16,6 @@
 #define is_upalpha(a)  ((a) >= 'A' && (a) <= 'Z')
 #define is_alpha(a)    (is_loalpha((a)) || is_upalpha((a)))
 #define is_alphanum(a) (is_alpha((a)) || is_digit((a)))
+#define is_ident(a)    (is_alpha((a)) || (a) == '_' || (a) == '$')
 
 #endif /* SOL_CHAR_H_ */

@@ -23,12 +23,16 @@ static inline void solL_increment(struct Lexer *lex, char ch)
 }
 
 
+/* Loop condition for consuming sequences of chars. */
+#define for_ch(cond) (lex->pos < lex->len && (ch = lex->src[lex->pos], (cond)))
+
+
 struct Token solL_tokenize(struct Lexer *lex)
 {
   char ch;
   while (1) {
     // skip initial whitespace
-    while (lex->pos < lex->len && (ch = lex->src[lex->pos], is_wspace(ch)))
+    while (for_ch(is_wspace(ch)))
       solL_increment(lex, ch);
 
     struct Token tok = TOKEN_INIT;
@@ -44,8 +48,18 @@ struct Token solL_tokenize(struct Lexer *lex)
       return tok;
     }
 
+    // identifier token
+    if (is_ident(ch)) {
+      while (for_ch(is_ident(ch) || is_digit(ch))) {
+        solL_increment(lex, ch);
+        tok.len++;
+      } 
+      tok.type = T_IDENTIFIER;
+      return tok;
+    }
+
     // unknown token
-    while (lex->pos < lex->len && (ch = lex->src[lex->pos], !is_wspace(ch))) {
+    while (for_ch(!is_wspace(ch))) {
       solL_increment(lex, ch);
       tok.len++;
     }
