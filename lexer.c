@@ -68,6 +68,21 @@ struct Token solL_tokenize(struct Lexer *lex)
       return tok;
     }
 
+    // single char tokens
+    switch (ch) {
+      case '+': tok.type = T_PLUS;    break;
+      case '-': tok.type = T_DASH;    break;
+      case '*': tok.type = T_STAR;    break;
+      case '/': tok.type = T_SLASH;   break;
+      case '(': tok.type = T_LPAREN;  break;
+      case ')': tok.type = T_RPAREN;  break;
+      default: goto unknown;
+    }
+    solL_increment(lex, ch);
+    tok.len++;
+    return tok;
+
+unknown:
     // unknown token
     while (for_ch(!is_wspace(ch))) {
       solL_increment(lex, ch);

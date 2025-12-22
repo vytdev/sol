@@ -24,9 +24,15 @@ struct Lexer {
 /* token types */
 #define T_INVALID         (-2)
 #define T_UNKNOWN         (-1)
-#define T_EOF               0
-#define T_IDENTIFIER        1
-#define T_NUMBER            2
+#define T_EOF              (0)
+#define T_IDENTIFIER       (1)
+#define T_NUMBER           (2)
+#define T_PLUS             (3)   /* + */
+#define T_DASH             (4)   /* - */
+#define T_STAR             (5)   /* * */
+#define T_SLASH            (6)   /* / */
+#define T_LPAREN           (7)   /* ( */
+#define T_RPAREN           (8)   /* ) */
 
 #define TOKEN_INIT ((struct Token){NULL,0,0,0,0,T_INVALID})
 #define LEXER_INIT ((struct Lexer){TOKEN_INIT,TOKEN_INIT,NULL,0,1,1,0})
