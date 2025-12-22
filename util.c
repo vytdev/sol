@@ -74,3 +74,15 @@ void msgtok(token_t *tok, lexer_t *lex, char *fmt, ...)
   va_end(args);
   print_token(tok, lex->len);
 }
+
+
+NORETRN void fatal_err(char *fmt, ...)
+{
+  va_list args;
+  va_start(args, fmt);
+  vfprintf(stderr, fmt, args);
+  va_end(args);
+  // we're a standalone executable with no sensitive open databases.
+  // we don't have to free everything manually.
+  exit(255);
+}
