@@ -7,15 +7,17 @@
 static inline void lexer_increment(lexer_t *lex, char ch)
 {
   lex->pos++;
+  lex->ln_off++;
   switch (ch) {
     case LF:
       lex->line++;
+      lex->ln_off = 0;
       /* fallthrough */
     case CR:
       lex->col = 1;
       break;
     case TAB:
-      lex->col += TABSTOP - (lex->col % TABSTOP);
+      lex->col += TABSTOP - ((lex->col - 1) % TABSTOP);
       break;
     default:
       lex->col++;
@@ -39,6 +41,7 @@ token_t lexer_tokenize(lexer_t *lex)
     tok.pos = lex->pos;
     tok.line = lex->line;
     tok.col = lex->col;
+    tok.ln_off = lex->ln_off;
     tok.start = &lex->src[lex->pos];
 
     // eof token

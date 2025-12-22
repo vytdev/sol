@@ -11,6 +11,7 @@ struct token {
   int len;
   int line;
   int col;
+  int ln_off;
   int pos;
   int type;
 };
@@ -22,6 +23,7 @@ struct lexer {
   int len;
   int line;
   int col;
+  int ln_off; /* actual how many chars from last LF */
   int pos;
 };
 
@@ -38,8 +40,8 @@ struct lexer {
 #define T_LPAREN           (7)   /* ( */
 #define T_RPAREN           (8)   /* ) */
 
-#define TOKEN_INIT ((token_t){NULL,0,0,0,0,T_INVALID})
-#define LEXER_INIT ((lexer_t){TOKEN_INIT,TOKEN_INIT,NULL,0,1,1,0})
+#define TOKEN_INIT ((token_t){NULL,0,0,0,0,0,T_INVALID})
+#define LEXER_INIT ((lexer_t){TOKEN_INIT,TOKEN_INIT,NULL,0,1,1,0,0})
 
 /**
  * parse the next token.

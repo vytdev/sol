@@ -26,9 +26,8 @@ int main(int argc, char **argv)
   token_t tok;
   do {
     tok = lexer_consume(&lex);
-    printf("ty%d ln%d col%d: ", tok.type, tok.line, tok.col);
-    for (int i = 0; i < tok.len; i++) fputc(tok.start[i], stdout);
-    fputc('\n', stdout);
+    printf("ty%d ln%d col%d:\n", tok.type, tok.line, tok.col);
+    print_token(&tok, lex.len);
   } while (tok.type != T_EOF);
 
   free(buf);

@@ -1,6 +1,8 @@
 #include "util.h"
+#include "char.h" /* TABSTOP */
 #include <stdlib.h>
 #include <stdio.h>
+
 
 char *readfile(char *path, size_t *len)
 {
@@ -34,4 +36,30 @@ char *readfile(char *path, size_t *len)
   if (len)
     *len = sz;
   return buf;
+}
+
+
+void print_token(token_t *tok, int len)
+{
+  /* print the line text */
+  printf(" %5d| ", tok->line);
+  for (int i = -tok->ln_off, tabcol = 0; tok->pos + i < len; i++) {
+    char ch = tok->start[i];
+    if (ch == CR || ch == LF)
+      break;
+    if (ch == TAB) {
+      int tabwidth = TABSTOP - (tabcol % TABSTOP);
+      for (int j = 0; j < tabwidth; j++) fputc(' ', stdout);
+      tabcol += tabwidth;
+      continue;
+    }
+    fputc(ch, stdout);
+    tabcol++;
+  }
+
+  /* the caret line */
+  printf("\n      | ");
+  for (int i = 1; i < tok->col; i++) fputc(' ', stdout);
+  for (int i = 0; i < tok->len; i++) fputc('^', stdout);
+  fputc('\n', stdout);
 }
