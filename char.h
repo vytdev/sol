@@ -1,7 +1,7 @@
 /* ascii stuff helper. */
 
-#ifndef SOL_CHAR_H_
-#define SOL_CHAR_H_
+#ifndef CHAR_H_
+#define CHAR_H_ 1
 
 #define TABSTOP 8
 
@@ -18,4 +18,4 @@
 #define is_alphanum(a) (is_alpha((a)) || is_digit((a)))
 #define is_ident(a)    (is_alpha((a)) || (a) == '_' || (a) == '$')
 
-#endif /* SOL_CHAR_H_ */
+#endif /* CHAR_H_ */

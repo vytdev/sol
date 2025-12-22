@@ -1,7 +1,7 @@
 /* utility */
 
-#ifndef SOL_UTIL_H_
-#define SOL_UTIL_H_
+#ifndef UTIL_H_
+#define UTIL_H_ 1
 
 #include <stddef.h>
 
@@ -11,4 +11,4 @@
  */
 char *readfile(char *path, size_t *len);
 
-#endif /* SOL_UTIL_H_ */
+#endif /* UTIL_H_ */

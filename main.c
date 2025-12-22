@@ -18,14 +18,14 @@ int main(int argc, char **argv)
     return 1;
   }
 
-  struct Lexer lex = LEXER_INIT;
+  lexer_t lex = LEXER_INIT;
   lex.src = buf;
   lex.len = len;
 
   // print tokens (temporary)
-  struct Token tok;
+  token_t tok;
   do {
-    tok = solL_consume(&lex);
+    tok = lexer_consume(&lex);
     printf("ty%d ln%d col%d: ", tok.type, tok.line, tok.col);
     for (int i = 0; i < tok.len; i++) fputc(tok.start[i], stdout);
     fputc('\n', stdout);
