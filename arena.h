@@ -1,7 +1,7 @@
 /* custom arena allocator */
 
-#ifndef sol_arena_h
-#define sol_arena_h 1
+#ifndef arena_h
+#define arena_h 1
 
 #include <stddef.h>
 
@@ -29,4 +29,4 @@ void *arena_new(arena_t *arena, size_t size);
  */
 void arena_free(arena_t *arena);
 
-#endif /* sol_arena_h */
+#endif /* arena_h */

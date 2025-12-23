@@ -1,7 +1,7 @@
 /* parse and possibly directly codegen */
 
-#ifndef sol_parser_h
-#define sol_parser_h 1
+#ifndef parser_h
+#define parser_h 1
 
 #include "ast.h"
 #include "arena.h"
@@ -55,4 +55,4 @@ ast_expr *parse_binary(parser_t *parser, int min_prec);
  */
 ast_expr *parse_expr(parser_t *parser);
 
-#endif /* sol_parser_h */
+#endif /* parser_h */

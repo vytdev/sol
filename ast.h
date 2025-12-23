@@ -1,7 +1,7 @@
 /* ast tree definitions */
 
-#ifndef sol_ast_h
-#define sol_ast_h 1
+#ifndef ast_h
+#define ast_h 1
 
 #include <stdint.h>
 #include "lexer.h"
@@ -68,4 +68,4 @@ int ast_tok2binop(int tok);
  */
 void ast_print_expr(ast_expr *expr);
 
-#endif /* sol_ast_h */
+#endif /* ast_h */

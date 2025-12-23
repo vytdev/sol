@@ -1,7 +1,7 @@
 /* utility */
 
-#ifndef sol_util_h
-#define sol_util_h 1
+#ifndef util_h
+#define util_h 1
 
 #include "lexer.h"
 #include <stddef.h>
@@ -40,4 +40,4 @@ void msgtok(token_t *tok, lexer_t *lex, char *fmt, ...);
  */
 NORETRN void fatal_err(char *fmt, ...);
 
-#endif /* sol_util_h */
+#endif /* util_h */

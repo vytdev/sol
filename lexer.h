@@ -1,7 +1,7 @@
 /* generates tokens from source */
 
-#ifndef sol_lexer_h
-#define sol_lexer_h 1
+#ifndef lexer_h
+#define lexer_h 1
 
 #include <stdlib.h> /* NULL */
 
@@ -63,4 +63,4 @@ token_t lexer_peek(lexer_t *lex);
  */
 token_t lexer_current(lexer_t *lex);
 
-#endif /* sol_lexer_h */
+#endif /* lexer_h */
