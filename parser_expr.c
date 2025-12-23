@@ -62,6 +62,7 @@ ast_expr *parse_primary(parser_t *parser)
     case T_LPAREN: {
       lexer_consume(&parser->lexer);
       ast_expr *expr = parse_expr(parser);
+      if (!expr) return NULL;
       peek = lexer_consume(&parser->lexer);
       if (peek.type != T_RPAREN) {
         msgtok(&peek, &parser->lexer,
@@ -82,6 +83,7 @@ ast_expr *parse_primary(parser_t *parser)
 ast_expr *parse_binary(parser_t *parser, int min_prec)
 {
   ast_expr *lhs = parse_primary(parser);
+  if (!lhs) return NULL;
 
   for (;;) {
     // check if next token is a binary op.
@@ -97,6 +99,7 @@ ast_expr *parse_binary(parser_t *parser, int min_prec)
     lexer_consume(&parser->lexer);   // consume op.
 
     ast_expr *rhs = parse_binary(parser, info.prec + info.assoc);
+    if (!rhs) return NULL;
 
     // setup binary op node.
     ast_expr *binop = newnode(ast_expr);
