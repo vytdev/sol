@@ -42,7 +42,7 @@ char *readfile(char *path, size_t *len)
 
 void print_token(token_t *tok, int len)
 {
-  /* print the line text */
+  // print the line text
   printf(" %5d| ", tok->line);
   for (int i = -tok->ln_off, tabcol = 0; tok->pos + i < len; i++) {
     char ch = tok->start[i];
@@ -58,10 +58,15 @@ void print_token(token_t *tok, int len)
     tabcol++;
   }
 
-  /* the caret line */
+  // the caret line
   printf("\n      | ");
   for (int i = 1; i < tok->col; i++) fputc(' ', stdout);
   for (int i = 0; i < tok->len; i++) fputc('^', stdout);
+
+  // eof has length 0, so instead carets, we'll print "eof"
+  if (tok->type == T_EOF)
+    printf("eof");
+
   fputc('\n', stdout);
 }
 
