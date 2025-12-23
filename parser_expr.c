@@ -2,6 +2,22 @@
 #include "util.h"
 
 
+ast_expr *parse_reference(parser_t *parser)
+{
+  token_t tok = lexer_consume(&parser->lexer);
+  if (tok.type != T_IDENTIFIER) {
+    msgtok(&tok, &parser->lexer, "syntax error: Expected identifier\n");
+    parser->err_cnt++;
+    return NULL;
+  }
+  // new node
+  ast_expr *expr = newnode(ast_expr);
+  expr->tok = tok;
+  expr->type = EXPR_REF;
+  return expr;
+}
+
+
 ast_expr *parse_int(parser_t *parser)
 {
   token_t tok = lexer_consume(&parser->lexer);
@@ -39,6 +55,8 @@ ast_expr *parse_primary(parser_t *parser)
 {
   token_t peek = lexer_peek(&parser->lexer);
   switch (peek.type) {
+    case T_IDENTIFIER:
+      return parse_reference(parser);
     case T_INTEGER:
       return parse_int(parser);
     case T_LPAREN: {

@@ -39,6 +39,9 @@ static void ast_print_expr_1(ast_expr *expr)
     return;
   }
   switch (expr->type) {
+    case EXPR_REF:
+      fwrite(expr->tok.start, 1, expr->tok.len, stdout);
+      break;
     case EXPR_INT:
       printf("%lu", expr->uint.val);
       break;

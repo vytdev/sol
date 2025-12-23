@@ -31,6 +31,11 @@ void parser_init(parser_t *parser, char *src, int len);
 void parser_free(parser_t *parser);
 
 /**
+ * parse an identifier reference.
+ */
+ast_expr *parse_reference(parser_t *parser);
+
+/**
  * parse an integer.
  */
 ast_expr *parse_int(parser_t *parser);
