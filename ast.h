@@ -54,6 +54,17 @@ struct binopinfo {
 /**
  * returns the binopinfo of the given binary operator (BIN_*).
  */
-struct binopinfo get_binopinfo(int op);
+struct binopinfo ast_get_binopinfo(int op);
+
+/**
+ * returns the binary operator (BIN_*) type from token type (T_*). AST_INVALID
+ * if not found.
+ */
+int ast_tok2binop(int tok);
+
+/**
+ * debugging utility to print an ast_expr tree.
+ */
+void ast_print_expr(ast_expr *expr);
 
 #endif /* AST_H_ */

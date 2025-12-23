@@ -1,29 +1,20 @@
 #include "parser.h"
-#include "lexer.h"
-#include "util.h"
 
 
-uint64_t parse_int(parser_t *parser, lexer_t *lex) {
-  token_t tok = lexer_consume(lex);
-  if (tok.type != T_INTEGER) {
-    msgtok(&tok, lex, "error: Expected an integer\n");
-    parser->err = 1;
-    return 0;
-  }
+void parser_init(parser_t *parser, char *src, int len)
+{
+  // hardcoded: enough to contain ast nodes of small srcs
+  parser->arena = arena_init(8192);
+  parser->lexer = LEXER_INIT;
+  parser->lexer.src = src;
+  parser->lexer.len = len;
+  parser->err_cnt = 0;
+}
 
-  // simply parse a base 10 uint. we don't care about the sign here
-  uint64_t val = 0;
-  for (int i = 0; i < tok.len; i++) {
-    char digit = tok.start[i] - '0';
-    // efficiently prevent overflow
-    if (val > UINT64_MAX / 10 || (val == UINT64_MAX / 10
-        && digit > UINT64_MAX % 10)) {
-      msgtok(&tok, lex, "error: Integer too big to fit into 64-bits\n");
-      parser->err = 1;
-      return 0;
-    }
-    val = val * 10 + digit;
-  }
 
-  return val;
+void parser_free(parser_t *parser)
+{
+  arena_free(parser->arena);
+  parser->arena = NULL;
+  parser->lexer = LEXER_INIT;
 }

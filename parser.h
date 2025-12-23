@@ -3,19 +3,51 @@
 #ifndef PARSER_H_
 #define PARSER_H_ 1
 
+#include "ast.h"
+#include "arena.h"
 #include "lexer.h"
+#include <stdlib.h> /* for NULL. */
 #include <stdint.h>
+
 
 typedef struct parser parser_t;
 struct parser {
-  int err;  /* should continue? */
+  arena_t *arena;
+  lexer_t lexer;
+  int err_cnt;
 };
 
-#define PARSER_INIT ((parser_t){0})
+/* internal: for parser_* funcs. */
+#define newnode(t) ((t *)arena_new(parser->arena, sizeof(t)))
+
+/**
+ * initialize a parser context.
+ */
+void parser_init(parser_t *parser, char *src, int len);
+
+/**
+ * free up the parser.
+ */
+void parser_free(parser_t *parser);
 
 /**
  * parse an integer.
  */
-uint64_t parse_int(parser_t *parser, lexer_t *lex);
+ast_expr *parse_int(parser_t *parser);
+
+/**
+ * parse primary expressions (i.e., literals, ids, parentheses).
+ */
+ast_expr *parse_primary(parser_t *parser);
+
+/**
+ * parse binary expression (i.e., add, sub, mul, div).
+ */
+ast_expr *parse_binary(parser_t *parser, int min_prec);
+
+/**
+ * parse an expression (top-level).
+ */
+ast_expr *parse_expr(parser_t *parser);
 
 #endif /* PARSER_H_ */

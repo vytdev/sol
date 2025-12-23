@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "util.h"
-#include "lexer.h"
 #include "parser.h"
 
 
@@ -19,14 +18,13 @@ int main(int argc, char **argv)
     return 1;
   }
 
-  lexer_t lex = LEXER_INIT;
-  lex.src = buf;
-  lex.len = len;
+  parser_t parser;
+  parser_init(&parser, buf, len);
+  ast_expr *expr = parse_expr(&parser);
+  printf("err cnt: %d\n", parser.err_cnt);
+  ast_print_expr(expr);
 
-  parser_t parser = PARSER_INIT;
-  uint64_t val = parse_int(&parser, &lex);
-  printf("parsed: %lu\n", val);
-
+  parser_free(&parser);
   free(buf);
   return 0;
 }
