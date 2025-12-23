@@ -3,5 +3,5 @@
 .*.swp
 
 # built files
-sol
+solc
 *.o

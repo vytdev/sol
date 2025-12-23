@@ -10,7 +10,7 @@ LDFLAGS=
 
 SRC=$(wildcard *.c)
 OBJ=$(SRC:.c=.o)
-TRG=sol
+TRG=solc
 
 .PHONY: default build debug release clean help
 
@@ -33,7 +33,7 @@ clean:
 	$(RM) $(OBJ) $(TRG)
 
 help:
-	@echo 'Sol Makefile'
+	@echo 'Sol Compiler Makefile'
 	@echo '  help         Show this help'
 	@echo '  clean        Delete built files'
 	@echo '  build        Plain build'
