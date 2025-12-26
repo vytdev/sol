@@ -3,5 +3,6 @@
 .*.swp
 
 # built files
-solc
+libsol.a
+sol
 *.o

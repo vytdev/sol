@@ -2,38 +2,53 @@
 #
 
 CC=         gcc
+AR=         ar rcs
 RM=         rm -rf
 
 STD=        gnu99
 CFLAGS=     -std=$(STD) -Wall -Wextra
 LDFLAGS=
 
-SRC=$(wildcard *.c)
-OBJ=$(SRC:.c=.o)
-TRG=solc
+LIB-SRC=        \
+	arena.c       \
+	ast.c         \
+	lexer.c       \
+	parser.c      \
+	parser_expr.c \
+	util.c
+LIB-OBJ=$(LIB-SRC:.c=.o)
+LIB-TRG=libsol.a
+
+EXC-SRC= \
+	main.c
+EXC-OBJ=$(EXC-SRC:.c=.o)
+EXC-TRG=sol
 
 .PHONY: default build debug release clean help
 
 default: release
-build: $(TRG)
+build: $(LIB-TRG) $(EXC-TRG)
 
 debug:    build
-debug:    CFLAGS+=    -g -D _DEBUG
-
+debug:    CFLAGS+=  -g -D _DEBUG
 release:  build
 release:  CFLAGS+=  -O2
 
-$(TRG): $(OBJ)
+$(LIB-TRG): $(LIB-OBJ)
+	$(AR) $@ $^
+
+$(EXC-TRG): $(EXC-OBJ) $(LIB-TRG)
 	$(CC) $(LDFLAGS) -o $@ $^
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
-	$(RM) $(OBJ) $(TRG)
+	$(RM) $(LIB-OBJ) $(LIB-TRG)
+	$(RM) $(EXC-OBJ) $(EXC-TRG)
 
 help:
-	@echo 'Sol Compiler Makefile'
+	@echo 'Sol Makefile'
 	@echo '  help         Show this help'
 	@echo '  clean        Delete built files'
 	@echo '  build        Plain build'
