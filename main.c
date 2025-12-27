@@ -20,9 +20,8 @@ int main(int argc, char **argv)
 
   parser_t parser;
   parser_init(&parser, buf, len);
-  ast_expr *expr = parse_expr(&parser);
-  printf("err cnt: %d\n", parser.err_cnt);
-  ast_print_expr(expr);
+  int err = parse_expr(&parser);
+  printf("err cnt: %d\n", err);
 
   parser_free(&parser);
   free(buf);

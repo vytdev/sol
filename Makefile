@@ -10,8 +10,6 @@ CFLAGS=     -std=$(STD) -Wall -Wextra
 LDFLAGS=
 
 LIB-SRC=        \
-	arena.c       \
-	ast.c         \
 	lexer.c       \
 	parser.c      \
 	parser_expr.c \
