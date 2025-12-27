@@ -1,7 +1,7 @@
 /* utility */
 
-#ifndef util_h
-#define util_h 1
+#ifndef sol_util_h
+#define sol_util_h 1
 
 #include "lexer.h"
 #include <stddef.h>
@@ -23,21 +23,21 @@
  * read an ascii file from `path`, and set its length to `len` (if not null).
  * returns an allocated memory.
  */
-char *readfile(char *path, size_t *len);
+char *readfile (char *path, size_t *len);
 
 /**
  * pretty print a token, given the source length for bound checking
  */
-void print_token(token_t *tok, int len);
+void print_token (token_t *tok, int len);
 
 /**
  * print a message with token.
  */
-void msgtok(token_t *tok, lexer_t *lex, char *fmt, ...);
+void msgtok (token_t *tok, lexer_t *lex, char *fmt, ...);
 
 /**
  * print a fatal error and exit.
  */
-NORETRN void fatal_err(char *fmt, ...);
+NORETRN void fatal_err (char *fmt, ...);
 
-#endif /* util_h */
+#endif /* sol_util_h */

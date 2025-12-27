@@ -3,9 +3,9 @@
 #include <stdint.h>
 
 
-int parse_reference(parser_t *parser)
+int solP_reference (parser_t *parser)
 {
-  token_t tok = lexer_consume(&parser->lexer);
+  token_t tok = solL_consume(&parser->lexer);
   if (tok.type != T_IDENTIFIER) {
     msgtok(&tok, &parser->lexer, "syntax error: Expected identifier\n");
     return PFAIL;
@@ -15,9 +15,9 @@ int parse_reference(parser_t *parser)
 }
 
 
-int parse_int(parser_t *parser)
+int solP_int (parser_t *parser)
 {
-  token_t tok = lexer_consume(&parser->lexer);
+  token_t tok = solL_consume(&parser->lexer);
   if (tok.type != T_INTEGER) {
     msgtok(&tok, &parser->lexer, "syntax error: Expected an integer\n");
     return PFAIL;
@@ -42,19 +42,19 @@ int parse_int(parser_t *parser)
 }
 
 
-int parse_primary(parser_t *parser)
+int solP_primary (parser_t *parser)
 {
-  token_t peek = lexer_peek(&parser->lexer);
+  token_t peek = solL_peek(&parser->lexer);
   switch (peek.type) {
     case T_IDENTIFIER:
-      return parse_reference(parser);
+      return solP_reference(parser);
     case T_INTEGER:
-      return parse_int(parser);
+      return solP_int(parser);
     case T_LPAREN: {
-      lexer_consume(&parser->lexer);
-      if (parse_expr(parser) != PSUCC)
+      solL_consume(&parser->lexer);
+      if (solP_expr(parser) != PSUCC)
         return PFAIL;
-      peek = lexer_consume(&parser->lexer);
+      peek = solL_consume(&parser->lexer);
       if (peek.type != T_RPAREN) {
         msgtok(&peek, &parser->lexer,
                "syntax error: Expected ')' to close '('\n");
@@ -78,7 +78,7 @@ int parse_primary(parser_t *parser)
 /*
  * get binop (BIN_*) based on token type (T_*)
  */
-static int tok2binop(int ttype)
+static int tok2binop (int ttype)
 {
   switch (ttype) {
     case T_PLUS:      return BIN_ADD;
@@ -106,15 +106,15 @@ static const struct binopinfo binops[] = {
 };
 
 
-int parse_binary(parser_t *parser, int min_prec)
+int solP_binary (parser_t *parser, int min_prec)
 {
   // parse initial lhs
-  if (parse_primary(parser) != PSUCC)
+  if (solP_primary(parser) != PSUCC)
     return PFAIL;
 
   for (;;) {
     // check if next token is a binary op.
-    token_t peek = lexer_peek(&parser->lexer);
+    token_t peek = solL_peek(&parser->lexer);
     int op = tok2binop(peek.type);
     if (op == BIN_UNK)
       break;
@@ -123,10 +123,10 @@ int parse_binary(parser_t *parser, int min_prec)
     const struct binopinfo *info = &binops[op];
     if (info->prec < min_prec)
       break;
-    lexer_consume(&parser->lexer);   // consume op.
+    solL_consume(&parser->lexer);   // consume op.
 
     // parse rhs
-    if (parse_binary(parser, info->prec + info->assoc) != PSUCC)
+    if (solP_binary(parser, info->prec + info->assoc) != PSUCC)
       return PFAIL;
 
     // TODO: codegen (op instr)
@@ -136,7 +136,7 @@ int parse_binary(parser_t *parser, int min_prec)
 }
 
 
-int parse_expr(parser_t *parser)
+int solP_expr (parser_t *parser)
 {
-  return parse_binary(parser, 0);
+  return solP_binary(parser, 0);
 }

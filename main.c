@@ -4,7 +4,7 @@
 #include "parser.h"
 
 
-int main(int argc, char **argv)
+int main (int argc, char **argv)
 {
   if (argc < 2) {
     printf("usage: %s FILE\n", argv[0]);
@@ -19,11 +19,11 @@ int main(int argc, char **argv)
   }
 
   parser_t parser;
-  parser_init(&parser, buf, len);
-  int err = parse_expr(&parser);
+  solP_init(&parser, buf, len);
+  int err = solP_expr(&parser);
   printf("err cnt: %d\n", err);
 
-  parser_free(&parser);
+  solP_free(&parser);
   free(buf);
   return 0;
 }

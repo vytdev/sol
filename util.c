@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 
-char *readfile(char *path, size_t *len)
+char *readfile (char *path, size_t *len)
 {
   FILE *fp = fopen(path, "rb");
   if (!fp)
@@ -40,7 +40,7 @@ char *readfile(char *path, size_t *len)
 }
 
 
-void print_token(token_t *tok, int len)
+void print_token (token_t *tok, int len)
 {
   // print the line text
   printf(" %5d| ", tok->line);
@@ -71,7 +71,7 @@ void print_token(token_t *tok, int len)
 }
 
 
-void msgtok(token_t *tok, lexer_t *lex, char *fmt, ...)
+void msgtok (token_t *tok, lexer_t *lex, char *fmt, ...)
 {
   va_list args;
   va_start(args, fmt);
@@ -81,7 +81,7 @@ void msgtok(token_t *tok, lexer_t *lex, char *fmt, ...)
 }
 
 
-NORETRN void fatal_err(char *fmt, ...)
+NORETRN void fatal_err (char *fmt, ...)
 {
   va_list args;
   va_start(args, fmt);

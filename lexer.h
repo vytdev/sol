@@ -1,7 +1,7 @@
 /* generates tokens from source */
 
-#ifndef lexer_h
-#define lexer_h 1
+#ifndef sol_lexer_h
+#define sol_lexer_h 1
 
 #include <stdlib.h> /* NULL */
 
@@ -46,21 +46,21 @@ struct lexer {
 /**
  * parse the next token.
  */
-token_t lexer_tokenize(lexer_t *lex);
+token_t solL_tokenize (lexer_t *lex);
 
 /**
  * returns the next token. steps the token stream
  */
-token_t lexer_consume(lexer_t *lex);
+token_t solL_consume (lexer_t *lex);
 
 /**
  * peek the next token but dont consume
  */
-token_t lexer_peek(lexer_t *lex);
+token_t solL_peek (lexer_t *lex);
 
 /**
  * returns the current token
  */
-token_t lexer_current(lexer_t *lex);
+token_t solL_current (lexer_t *lex);
 
-#endif /* lexer_h */
+#endif /* sol_lexer_h */

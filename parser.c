@@ -1,7 +1,7 @@
 #include "parser.h"
 
 
-void parser_init(parser_t *parser, char *src, int len)
+void solP_init (parser_t *parser, char *src, int len)
 {
   parser->lexer = LEXER_INIT;
   parser->lexer.src = src;
@@ -9,7 +9,7 @@ void parser_init(parser_t *parser, char *src, int len)
 }
 
 
-void parser_free(parser_t *parser)
+void solP_free (parser_t *parser)
 {
   parser->lexer = LEXER_INIT;
 }

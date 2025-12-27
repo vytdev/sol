@@ -4,7 +4,7 @@
 /**
  * increment the lexer
  */
-static inline void lexer_increment(lexer_t *lex, char ch)
+static inline void increment (lexer_t *lex, char ch)
 {
   lex->pos++;
   lex->ln_off++;
@@ -29,13 +29,13 @@ static inline void lexer_increment(lexer_t *lex, char ch)
 #define for_ch(cond) (lex->pos < lex->len && (ch = lex->src[lex->pos], (cond)))
 
 
-token_t lexer_tokenize(lexer_t *lex)
+token_t solL_tokenize (lexer_t *lex)
 {
   char ch;
   while (1) {
     // skip initial whitespace
     while (for_ch(is_wspace(ch)))
-      lexer_increment(lex, ch);
+      increment(lex, ch);
 
     token_t tok = TOKEN_INIT;
     tok.pos = lex->pos;
@@ -54,7 +54,7 @@ token_t lexer_tokenize(lexer_t *lex)
     // identifier token
     if (is_ident(ch)) {
       while (for_ch(is_ident(ch) || is_digit(ch))) {
-        lexer_increment(lex, ch);
+        increment(lex, ch);
         tok.len++;
       } 
       tok.type = T_IDENTIFIER;
@@ -64,7 +64,7 @@ token_t lexer_tokenize(lexer_t *lex)
     // integer token
     if (is_digit(ch)) {
       while (for_ch(is_digit(ch))) {
-        lexer_increment(lex, ch);
+        increment(lex, ch);
         tok.len++;
       }
       tok.type = T_INTEGER;
@@ -81,14 +81,14 @@ token_t lexer_tokenize(lexer_t *lex)
       case ')': tok.type = T_RPAREN;  break;
       default: goto unknown;
     }
-    lexer_increment(lex, ch);
+    increment(lex, ch);
     tok.len++;
     return tok;
 
 unknown:
     // unknown token
     while (for_ch(!is_wspace(ch))) {
-      lexer_increment(lex, ch);
+      increment(lex, ch);
       tok.len++;
     }
     tok.type = T_UNKNOWN;
@@ -97,10 +97,10 @@ unknown:
 }
 
 
-token_t lexer_consume(lexer_t *lex)
+token_t solL_consume (lexer_t *lex)
 {
   if (lex->next.type == T_INVALID)
-    lex->curr = lexer_tokenize(lex);
+    lex->curr = solL_tokenize(lex);
   else {
     lex->curr = lex->next;
     lex->next.type = T_INVALID;
@@ -109,19 +109,19 @@ token_t lexer_consume(lexer_t *lex)
 }
 
 
-token_t lexer_peek(lexer_t *lex)
+token_t solL_peek (lexer_t *lex)
 {
   if (lex->next.type == T_INVALID)
-    lex->next = lexer_tokenize(lex);
+    lex->next = solL_tokenize(lex);
   return lex->next;
 }
 
 
-token_t lexer_current(lexer_t *lex)
+token_t solL_current (lexer_t *lex)
 {
   if (lex->curr.type == T_INVALID) {
     if (lex->next.type == T_INVALID)
-      lex->curr = lexer_tokenize(lex);
+      lex->curr = solL_tokenize(lex);
     else {
       lex->curr = lex->next;
       lex->next.type = T_INVALID;
