@@ -1,13 +1,21 @@
 #include "compile.h"
 #include "parser.h"
 #include "vm.h"
+#include "lexer.h"
+#include <stdlib.h>  // for NULL.
 
 
-void solC_init (compiler_t *C, char *src, int len, char *code, ulong clen)
+void solC_init (solc *C, char *src, int len, char *code, ulong clen)
 {
-  C->lex = LEXER_INIT;
-  C->lex.src = src;
-  C->lex.len = len;
+  // lexing
+  C->curr = TOKEN_INIT;
+  C->next = TOKEN_INIT;
+  C->src = src;
+  C->len = len;
+  C->line = 1;
+  C->col = 1;
+  C->pos = 0;
+  C->ln_off = 0;
   // error reporting
   C->err = NULL;
   C->err_cnt = 0;
@@ -19,7 +27,7 @@ void solC_init (compiler_t *C, char *src, int len, char *code, ulong clen)
 }
 
 
-void solC_seterrbuf (compiler_t *C, struct compile_err *buf, int len)
+void solC_seterrbuf (solc *C, compile_err *buf, int len)
 {
   C->err = buf;
   C->err_max = len;
@@ -27,7 +35,7 @@ void solC_seterrbuf (compiler_t *C, struct compile_err *buf, int len)
 }
 
 
-int solC_err (compiler_t *C, token_t *tok, char *msg)
+int solC_err (solc *C, token_t *tok, char *msg)
 {
   if (C->err_cnt < C->err_max) {
     C->err[C->err_cnt].msg = msg;
@@ -38,7 +46,7 @@ int solC_err (compiler_t *C, token_t *tok, char *msg)
 }
 
 
-int solC_compile (compiler_t *C)
+int solC_compile (solc *C)
 {
   // could change in the future
   int err = solP_expr(C);
@@ -47,17 +55,7 @@ int solC_compile (compiler_t *C)
 }
 
 
-/* bin op to opcode map */
-const int solC_binop2opc[BIN_LENGTH] = {
-  [BIN_UNK] = O_NOP,
-  [BIN_ADD] = O_ADD,
-  [BIN_SUB] = O_SUB,
-  [BIN_MUL] = O_MUL,
-  [BIN_DIV] = O_DIV,
-};
-
-
-int solC_emit (compiler_t *C, char *bytes, ulong cnt)
+int solC_emit (solc *C, char *bytes, ulong cnt)
 {
   if (C->err_cnt > 0)
     return C->err_cnt;
@@ -70,7 +68,7 @@ int solC_emit (compiler_t *C, char *bytes, ulong cnt)
 }
 
 
-int solC_emitbyte (compiler_t *C, char byte)
+int solC_emitbyte (solc *C, char byte)
 {
   if (C->err_cnt > 0)
     return C->err_cnt;
@@ -81,7 +79,7 @@ int solC_emitbyte (compiler_t *C, char byte)
 }
 
 
-int solC_emit64 (compiler_t *C, uint64_t val)
+int solC_emit64 (solc *C, uint64_t val)
 {
   char buf[8];
   buf[0] = (val >>  0) & 0xff;

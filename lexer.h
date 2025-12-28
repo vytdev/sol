@@ -3,29 +3,8 @@
 #ifndef sol_lexer_h
 #define sol_lexer_h 1
 
-#include <stdlib.h> /* NULL */
+#include "compile.h"
 
-typedef struct token token_t;
-struct token {
-  char *start;
-  int len;
-  int line;
-  int col;
-  int ln_off;
-  int pos;
-  int type;
-};
-
-typedef struct lexer lexer_t;
-struct lexer {
-  token_t curr, next;
-  char *src;
-  int len;
-  int line;
-  int col;
-  int ln_off; /* actual how many chars from last LF */
-  int pos;
-};
 
 /* token types */
 #define T_INVALID         (-2)
@@ -40,27 +19,26 @@ struct lexer {
 #define T_LPAREN           (7)   /* ( */
 #define T_RPAREN           (8)   /* ) */
 
-#define TOKEN_INIT ((token_t){NULL,0,0,0,0,0,T_INVALID})
-#define LEXER_INIT ((lexer_t){TOKEN_INIT,TOKEN_INIT,NULL,0,1,1,0,0})
+#define TOKEN_INIT ((token_t){0,0,0,0,0,0,T_INVALID})
 
 /**
  * parse the next token.
  */
-token_t solL_tokenize (lexer_t *L);
+token_t solL_tokenize (solc *C);
 
 /**
  * returns the next token. steps the token stream
  */
-token_t solL_consume (lexer_t *L);
+token_t solL_consume (solc *C);
 
 /**
  * peek the next token but dont consume
  */
-token_t solL_peek (lexer_t *L);
+token_t solL_peek (solc *C);
 
 /**
  * returns the current token
  */
-token_t solL_current (lexer_t *L);
+token_t solL_current (solc *C);
 
 #endif /* sol_lexer_h */

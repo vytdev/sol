@@ -1,5 +1,6 @@
 #include "util.h"
 #include "char.h" /* TABSTOP */
+#include "lexer.h"
 #include <stdarg.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -40,7 +41,7 @@ char *readfile (char *path, size_t *len)
 }
 
 
-void print_token (token_t *tok, int len)
+void print_token (token_t *tok, uint len)
 {
   // don't print invalid tokens
   if (tok->type == T_INVALID)
@@ -64,8 +65,8 @@ void print_token (token_t *tok, int len)
 
   // the caret line
   printf("\n      | ");
-  for (int i = 1; i < tok->col; i++) fputc(' ', stdout);
-  for (int i = 0; i < tok->len; i++) fputc('^', stdout);
+  for (uint i = 1; i < tok->col; i++) fputc(' ', stdout);
+  for (uint i = 0; i < tok->len; i++) fputc('^', stdout);
 
   // eof has length 0, so instead carets, we'll print "eof"
   if (tok->type == T_EOF)
@@ -75,13 +76,13 @@ void print_token (token_t *tok, int len)
 }
 
 
-void msgtok (token_t *tok, lexer_t *lex, char *fmt, ...)
+void msgtok (solc *C, token_t *tok, char *fmt, ...)
 {
   va_list args;
   va_start(args, fmt);
   vprintf(fmt, args);
   va_end(args);
-  print_token(tok, lex->len);
+  print_token(tok, C->len);
 }
 
 

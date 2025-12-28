@@ -3,7 +3,7 @@
 #ifndef sol_util_h
 #define sol_util_h 1
 
-#include "lexer.h"
+#include "compile.h"
 #include <stddef.h>
 
 
@@ -28,12 +28,12 @@ char *readfile (char *path, size_t *len);
 /**
  * pretty print a token, given the source length for bound checking
  */
-void print_token (token_t *tok, int len);
+void print_token (token_t *tok, uint len);
 
 /**
  * print a message with token.
  */
-void msgtok (token_t *tok, lexer_t *lex, char *fmt, ...);
+void msgtok (solc *C, token_t *tok, char *fmt, ...);
 
 /**
  * print a fatal error and exit.
