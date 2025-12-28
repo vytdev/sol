@@ -52,6 +52,8 @@ const int solC_binop2opc[BIN_LENGTH] = {
 
 int solC_emit (compiler_t *C, char *bytes, ulong cnt)
 {
+  if (C->err_cnt > 0)
+    return C->err_cnt;
   if (C->cpos + cnt > C->clen)
     return solC_err(C, NULL, "code gen: Ran out of memory\n");
   for (ulong i = 0; i < cnt; i++)
@@ -63,6 +65,8 @@ int solC_emit (compiler_t *C, char *bytes, ulong cnt)
 
 int solC_emitbyte (compiler_t *C, char byte)
 {
+  if (C->err_cnt > 0)
+    return C->err_cnt;
   if (C->cpos + 1 > C->clen)
     return solC_err(C, NULL, "code gen: Ran out of memory\n");
   C->code[C->cpos++] = byte;

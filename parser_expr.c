@@ -31,8 +31,9 @@ int solP_int (compiler_t *C)
     val = val * 10 + digit;
   }
 
-  solC_emitbyte(C, O_PUSH64);
-  solC_emit64(C, val);
+  int err;
+  err = solC_emitbyte(C, O_PUSH64);   if (err) return err;
+  err = solC_emit64(C, val);          if (err) return err;
   return CSUCC;
 }
 
@@ -114,7 +115,7 @@ int solP_binary (compiler_t *C, int min_prec)
       return CFAIL;
 
     // the op instruction
-    solC_emitbyte(C, solC_binop2opc[op]);
+    int err = solC_emitbyte(C, solC_binop2opc[op]);   if (err) return err;
   }
 
   return CSUCC;
