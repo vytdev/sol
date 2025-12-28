@@ -6,3 +6,4 @@
 libsol.a
 sol
 *.o
+*.d
