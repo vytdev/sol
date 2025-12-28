@@ -37,7 +37,7 @@ int main (int argc, char **argv)
   int err = solc_compile(&C);
   int printable_err = err > 20 ? 20 : err;   // prevent accessing beyond errs[]
   for (int i = 0; i < printable_err; i++)
-    msgtok(&C, &C.err[i].token, C.err[i].msg);
+    msgtok(&C, &C.err[i].token, "%s", C.err[i].msg);
   printf("compile err cnt: %d\n", err);
   if (err != CSUCC) {
     free(code);

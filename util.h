@@ -33,7 +33,7 @@ void print_token (token_t *tok, uint len);
 /**
  * print a message with token.
  */
-void msgtok (solc *C, token_t *tok, char *fmt, ...);
+void msgtok (solc *C, token_t *tok, const char *fmt, ...);
 
 /**
  * print a fatal error and exit.

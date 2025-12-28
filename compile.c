@@ -6,7 +6,7 @@
 #include <stdlib.h>  // for NULL.
 
 
-void solc_init (solc *C, char *src, int len, char *code, ulong clen)
+void solc_init (solc *C, const char *src, int len, char *code, ulong clen)
 {
   // lexing
   C->curr = TOKEN_INIT;
@@ -36,7 +36,7 @@ void solc_seterrbuf (solc *C, compile_err *buf, int len)
 }
 
 
-int solc_err (solc *C, token_t *tok, char *msg)
+int solc_err (solc *C, token_t *tok, const char *msg)
 {
   if (C->err_cnt < C->err_max) {
     C->err[C->err_cnt].msg = msg;

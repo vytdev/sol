@@ -76,7 +76,7 @@ void print_token (token_t *tok, uint len)
 }
 
 
-void msgtok (solc *C, token_t *tok, char *fmt, ...)
+void msgtok (solc *C, token_t *tok, const char *fmt, ...)
 {
   va_list args;
   va_start(args, fmt);
