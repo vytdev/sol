@@ -29,7 +29,7 @@ static inline void increment (solc *C, char ch)
 #define for_ch(cond) (C->pos < C->len && (ch = C->src[C->pos], (cond)))
 
 
-token_t solL_tokenize (solc *C)
+token_t solcL_tokenize (solc *C)
 {
   char ch;
   while (1) {
@@ -97,10 +97,10 @@ unknown:
 }
 
 
-token_t solL_consume (solc *C)
+token_t solcL_consume (solc *C)
 {
   if (C->next.type == T_INVALID)
-    C->curr = solL_tokenize(C);
+    C->curr = solcL_tokenize(C);
   else {
     C->curr = C->next;
     C->next.type = T_INVALID;
@@ -109,19 +109,19 @@ token_t solL_consume (solc *C)
 }
 
 
-token_t solL_peek (solc *C)
+token_t solcL_peek (solc *C)
 {
   if (C->next.type == T_INVALID)
-    C->next = solL_tokenize(C);
+    C->next = solcL_tokenize(C);
   return C->next;
 }
 
 
-token_t solL_current (solc *C)
+token_t solcL_current (solc *C)
 {
   if (C->curr.type == T_INVALID) {
     if (C->next.type == T_INVALID)
-      C->curr = solL_tokenize(C);
+      C->curr = solcL_tokenize(C);
     else {
       C->curr = C->next;
       C->next.type = T_INVALID;

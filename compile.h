@@ -44,36 +44,36 @@ typedef struct solc {
 /**
  * initialize a compiler context.
  */
-void solC_init (solc *C, char *src, int len, char *code, ulong clen);
+void solc_init (solc *C, char *src, int len, char *code, ulong clen);
 
 /**
  * set error msg buffer.
  */
-void solC_seterrbuf (solc *C, compile_err *buf, int len);
+void solc_seterrbuf (solc *C, compile_err *buf, int len);
 
 /**
  * add a compile error.
  */
-int solC_err (solc *C, token_t *tok, char *msg);
+int solc_err (solc *C, token_t *tok, char *msg);
 
 /**
  * compile source into bytecode.
  */
-int solC_compile (solc *C);
+int solc_compile (solc *C);
 
 /**
  * emit bytes to code buffer.
  */
-int solC_emit (solc *C, char *bytes, ulong cnt);
+int solcG_emit (solc *C, char *bytes, ulong cnt);
 
 /**
  * emit a single byte.
  */
-int solC_emitbyte (solc *C, char byte);
+int solcG_emitbyte (solc *C, char byte);
 
 /**
  * emit a 64-bit value.
  */
-int solC_emit64 (solc *C, uint64_t val);
+int solcG_emit64 (solc *C, uint64_t val);
 
 #endif /* sol_compile_h */

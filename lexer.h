@@ -24,21 +24,21 @@
 /**
  * parse the next token.
  */
-token_t solL_tokenize (solc *C);
+token_t solcL_tokenize (solc *C);
 
 /**
  * returns the next token. steps the token stream
  */
-token_t solL_consume (solc *C);
+token_t solcL_consume (solc *C);
 
 /**
  * peek the next token but dont consume
  */
-token_t solL_peek (solc *C);
+token_t solcL_peek (solc *C);
 
 /**
  * returns the current token
  */
-token_t solL_current (solc *C);
+token_t solcL_current (solc *C);
 
 #endif /* sol_lexer_h */

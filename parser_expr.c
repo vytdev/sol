@@ -5,21 +5,21 @@
 #include <stdint.h>
 
 
-int solP_reference (solc *C)
+int solcP_reference (solc *C)
 {
-  token_t tok = solL_consume(C);
+  token_t tok = solcL_consume(C);
   if (tok.type != T_IDENTIFIER)
-    return solC_err(C, &tok, "syntax error: Expected identifier\n");
+    return solc_err(C, &tok, "syntax error: Expected identifier\n");
   // TODO: codegen
   return CSUCC;
 }
 
 
-int solP_int (solc *C)
+int solcP_int (solc *C)
 {
-  token_t tok = solL_consume(C);
+  token_t tok = solcL_consume(C);
   if (tok.type != T_INTEGER)
-    return solC_err(C, &tok, "syntax error: Expected an integer\n");
+    return solc_err(C, &tok, "syntax error: Expected an integer\n");
 
   // simply parse a base 10 uint. we don't care about the sign here
   uint64_t val = 0;
@@ -28,39 +28,39 @@ int solP_int (solc *C)
     // efficiently prevent overflow
     if (val > UINT64_MAX / 10 || (val == UINT64_MAX / 10
         && digit > UINT64_MAX % 10))
-      return solC_err(C, &tok,
+      return solc_err(C, &tok,
                       "syntax error: Integer too big to fit into 64-bits\n");
     val = val * 10 + digit;
   }
 
   int err;
-  err = solC_emitbyte(C, O_PUSH64);
+  err = solcG_emitbyte(C, O_PUSH64);
   if (err) return err;
-  err = solC_emit64(C, val);
+  err = solcG_emit64(C, val);
   if (err) return err;
   return CSUCC;
 }
 
 
-int solP_primary (solc *C)
+int solcP_primary (solc *C)
 {
-  token_t peek = solL_peek(C);
+  token_t peek = solcL_peek(C);
   switch (peek.type) {
     case T_IDENTIFIER:
-      return solP_reference(C);
+      return solcP_reference(C);
     case T_INTEGER:
-      return solP_int(C);
+      return solcP_int(C);
     case T_LPAREN: {
-      solL_consume(C);
-      if (solP_expr(C) != CSUCC)
+      solcL_consume(C);
+      if (solcP_expr(C) != CSUCC)
         return CFAIL;
-      peek = solL_consume(C);
+      peek = solcL_consume(C);
       if (peek.type != T_RPAREN)
-        return solC_err(C, &peek, "syntax error: Expected ')' to close '('\n");
+        return solc_err(C, &peek, "syntax error: Expected ')' to close '('\n");
       return CSUCC;
     }
     default:
-      return solC_err(C, &peek, "syntax error: Expected expression\n");
+      return solc_err(C, &peek, "syntax error: Expected expression\n");
   }
 }
 
@@ -111,15 +111,15 @@ static const struct binopinfo binops[] = {
 };
 
 
-int solP_binary (solc *C, int min_prec)
+int solcP_binary (solc *C, int min_prec)
 {
   // parse initial lhs
-  if (solP_primary(C) != CSUCC)
+  if (solcP_primary(C) != CSUCC)
     return CFAIL;
 
   for (;;) {
     // check if next token is a binary op.
-    token_t peek = solL_peek(C);
+    token_t peek = solcL_peek(C);
     int op = tok2binop(peek.type);
     if (op == BIN_UNK)
       break;
@@ -128,14 +128,14 @@ int solP_binary (solc *C, int min_prec)
     const struct binopinfo *info = &binops[op];
     if (info->prec < min_prec)
       break;
-    solL_consume(C);   // consume op.
+    solcL_consume(C);   // consume op.
 
     // parse rhs
-    if (solP_binary(C, info->prec + info->assoc) != CSUCC)
+    if (solcP_binary(C, info->prec + info->assoc) != CSUCC)
       return CFAIL;
 
     // the op instruction
-    int err = solC_emitbyte(C, binop2opc[op]);
+    int err = solcG_emitbyte(C, binop2opc[op]);
     if (err) return err;
   }
 
@@ -143,7 +143,7 @@ int solP_binary (solc *C, int min_prec)
 }
 
 
-int solP_expr (solc *C)
+int solcP_expr (solc *C)
 {
-  return solP_binary(C, 0);
+  return solcP_binary(C, 0);
 }

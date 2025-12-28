@@ -9,26 +9,26 @@
 /**
  * parse an identifier reference.
  */
-int solP_reference (solc *C);
+int solcP_reference (solc *C);
 
 /**
  * parse an integer.
  */
-int solP_int (solc *C);
+int solcP_int (solc *C);
 
 /**
  * parse primary expressions (i.e., literals, ids, parentheses).
  */
-int solP_primary (solc *C);
+int solcP_primary (solc *C);
 
 /**
  * parse binary expression (i.e., add, sub, mul, div).
  */
-int solP_binary (solc *C, int min_prec);
+int solcP_binary (solc *C, int min_prec);
 
 /**
  * parse an expression (top-level).
  */
-int solP_expr (solc *C);
+int solcP_expr (solc *C);
 
 #endif /* sol_parser_h */

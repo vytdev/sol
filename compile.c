@@ -5,7 +5,7 @@
 #include <stdlib.h>  // for NULL.
 
 
-void solC_init (solc *C, char *src, int len, char *code, ulong clen)
+void solc_init (solc *C, char *src, int len, char *code, ulong clen)
 {
   // lexing
   C->curr = TOKEN_INIT;
@@ -27,7 +27,7 @@ void solC_init (solc *C, char *src, int len, char *code, ulong clen)
 }
 
 
-void solC_seterrbuf (solc *C, compile_err *buf, int len)
+void solc_seterrbuf (solc *C, compile_err *buf, int len)
 {
   C->err = buf;
   C->err_max = len;
@@ -35,7 +35,7 @@ void solC_seterrbuf (solc *C, compile_err *buf, int len)
 }
 
 
-int solC_err (solc *C, token_t *tok, char *msg)
+int solc_err (solc *C, token_t *tok, char *msg)
 {
   if (C->err_cnt < C->err_max) {
     C->err[C->err_cnt].msg = msg;
@@ -46,21 +46,21 @@ int solC_err (solc *C, token_t *tok, char *msg)
 }
 
 
-int solC_compile (solc *C)
+int solc_compile (solc *C)
 {
   // could change in the future
-  int err = solP_expr(C);
+  int err = solcP_expr(C);
   if (err) return err;
-  return solC_emitbyte(C, O_HALT);
+  return solcG_emitbyte(C, O_HALT);
 }
 
 
-int solC_emit (solc *C, char *bytes, ulong cnt)
+int solcG_emit (solc *C, char *bytes, ulong cnt)
 {
   if (C->err_cnt > 0)
     return C->err_cnt;
   if (C->cpos + cnt > C->clen)
-    return solC_err(C, NULL, "code gen: Ran out of memory\n");
+    return solc_err(C, NULL, "code gen: Ran out of memory\n");
   for (ulong i = 0; i < cnt; i++)
     C->code[C->cpos + i] = bytes[i];
   C->cpos += cnt;
@@ -68,18 +68,18 @@ int solC_emit (solc *C, char *bytes, ulong cnt)
 }
 
 
-int solC_emitbyte (solc *C, char byte)
+int solcG_emitbyte (solc *C, char byte)
 {
   if (C->err_cnt > 0)
     return C->err_cnt;
   if (C->cpos + 1 > C->clen)
-    return solC_err(C, NULL, "code gen: Ran out of memory\n");
+    return solc_err(C, NULL, "code gen: Ran out of memory\n");
   C->code[C->cpos++] = byte;
   return CSUCC;
 }
 
 
-int solC_emit64 (solc *C, uint64_t val)
+int solcG_emit64 (solc *C, uint64_t val)
 {
   char buf[8];
   buf[0] = (val >>  0) & 0xff;
@@ -90,5 +90,5 @@ int solC_emit64 (solc *C, uint64_t val)
   buf[5] = (val >> 40) & 0xff;
   buf[6] = (val >> 48) & 0xff;
   buf[7] = (val >> 56) & 0xff;
-  return solC_emit(C, buf, 8);
+  return solcG_emit(C, buf, 8);
 }

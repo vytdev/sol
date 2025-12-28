@@ -32,9 +32,9 @@ int main (int argc, char **argv)
 
   // compile
   solc C;
-  solC_init(&C, buf, len, code, CODESZ);
-  solC_seterrbuf(&C, errs, 20);
-  int err = solC_compile(&C);
+  solc_init(&C, buf, len, code, CODESZ);
+  solc_seterrbuf(&C, errs, 20);
+  int err = solc_compile(&C);
   int printable_err = err > 20 ? 20 : err;   // prevent accessing beyond errs[]
   for (int i = 0; i < printable_err; i++)
     msgtok(&C, &C.err[i].token, C.err[i].msg);
