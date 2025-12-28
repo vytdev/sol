@@ -42,6 +42,10 @@ char *readfile (char *path, size_t *len)
 
 void print_token (token_t *tok, int len)
 {
+  // don't print invalid tokens
+  if (tok->type == T_INVALID)
+    return;
+
   // print the line text
   printf(" %5d| ", tok->line);
   for (int i = -tok->ln_off, tabcol = 0; tok->pos + i < len; i++) {
