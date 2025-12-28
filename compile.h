@@ -14,17 +14,15 @@ struct compile_err {
   token_t token;
 };
 
-/* how much error before stop */
-#define MAXCOMPERR 20
-
 typedef struct compiler compiler_t;
 struct compiler {
   lexer_t lex;
-  struct compile_err err[MAXCOMPERR];
-  int err_cnt;
+  /* compile errors */
+  struct compile_err *err;
+  int err_cnt, err_max;
+  /* codegen */
   char *code;
-  ulong cpos;
-  ulong clen;
+  ulong cpos, clen;
 };
 
 /* compiler states */
@@ -46,6 +44,11 @@ extern const int solC_binop2opc[BIN_LENGTH];
  * initialize a compiler context.
  */
 void solC_init (compiler_t *C, char *src, int len, char *code, ulong clen);
+
+/**
+ * set error msg buffer.
+ */
+void solC_seterrbuf (compiler_t *C, struct compile_err *buf, int len);
 
 /**
  * add a compile error.

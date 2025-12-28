@@ -28,11 +28,15 @@ int main (int argc, char **argv)
     return 1;
   }
 
+  struct compile_err errs[20];
+
   // compile
   compiler_t C;
   solC_init(&C, buf, len, code, CODESZ);
+  solC_seterrbuf(&C, errs, 20);
   int err = solC_compile(&C);
-  for (int i = 0; i < err; i++)
+  int printable_err = err > 20 ? 20 : err;   // prevent accessing beyond errs[]
+  for (int i = 0; i < printable_err; i++)
     msgtok(&C.err[i].token, &C.lex, C.err[i].msg);
   printf("compile err cnt: %d\n", err);
   if (err != CSUCC) {

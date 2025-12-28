@@ -9,7 +9,9 @@ void solC_init (compiler_t *C, char *src, int len, char *code, ulong clen)
   C->lex.src = src;
   C->lex.len = len;
   // error reporting
+  C->err = NULL;
   C->err_cnt = 0;
+  C->err_max = 0;
   // for codegen
   C->code = code;
   C->cpos = 0;
@@ -17,14 +19,19 @@ void solC_init (compiler_t *C, char *src, int len, char *code, ulong clen)
 }
 
 
+void solC_seterrbuf (compiler_t *C, struct compile_err *buf, int len)
+{
+  C->err = buf;
+  C->err_max = len;
+  C->err_cnt = 0;
+}
+
+
 int solC_err (compiler_t *C, token_t *tok, char *msg)
 {
-  if (C->err_cnt < MAXCOMPERR) {
+  if (C->err_cnt < C->err_max) {
     C->err[C->err_cnt].msg = msg;
-    if (tok)
-      C->err[C->err_cnt].token = *tok;
-    else
-      C->err[C->err_cnt].token = TOKEN_INIT;
+    C->err[C->err_cnt].token = tok ? *tok : TOKEN_INIT;
   }
   C->err_cnt++;
   return C->err_cnt;
