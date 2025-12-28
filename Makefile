@@ -12,7 +12,8 @@ LDFLAGS=
 LIB-SRC=        \
 	lexer.c       \
 	parser.c      \
-	parser_expr.c
+	parser_expr.c \
+	vm.c
 LIB-OBJ=$(LIB-SRC:.c=.o)
 LIB-TRG=libsol.a
 
