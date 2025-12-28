@@ -1,7 +1,7 @@
 /* vm component of sol */
 
-#ifndef sol_vm_h
-#define sol_vm_h 1
+#ifndef sol_h
+#define sol_h 1
 
 #include <stdint.h>
 
@@ -73,4 +73,4 @@ int sol_pop (sol *T, tvalue_t *val);
  */
 int sol_exec (sol *T);
 
-#endif /* sol_vm_h */
+#endif /* sol_h */

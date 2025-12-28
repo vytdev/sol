@@ -1,4 +1,4 @@
-#include "vm.h"
+#include "sol.h"
 #include <stdlib.h>   /* for NULL. */
 
 

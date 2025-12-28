@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "util.h"
-#include "compile.h"
-#include "vm.h"
+#include "solc.h"
+#include "sol.h"
 
 
 #define CODESZ 8192

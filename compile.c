@@ -1,6 +1,7 @@
-#include "compile.h"
+#include "solc.h"
+#include "sol.h"
 #include "parser.h"
-#include "vm.h"
+#include "codegen.h"
 #include "lexer.h"
 #include <stdlib.h>  // for NULL.
 

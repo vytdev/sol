@@ -1,9 +1,9 @@
 /* generates tokens from source */
 
-#ifndef sol_lexer_h
-#define sol_lexer_h 1
+#ifndef solcL_h
+#define solcL_h 1
 
-#include "compile.h"
+#include "solc.h"
 
 
 /* token types */
@@ -41,4 +41,4 @@ token_t solcL_peek (solc *C);
  */
 token_t solcL_current (solc *C);
 
-#endif /* sol_lexer_h */
+#endif /* solcL_h */

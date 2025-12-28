@@ -1,9 +1,9 @@
 /* parse and possibly directly codegen */
 
-#ifndef sol_parser_h
-#define sol_parser_h 1
+#ifndef solcP_h
+#define solcP_h 1
 
-#include "compile.h"
+#include "solc.h"
 
 
 /**
@@ -41,4 +41,4 @@ int solcP_infix (solc *C, int min_prec);
  */
 int solcP_expr (solc *C);
 
-#endif /* sol_parser_h */
+#endif /* solcP_h */

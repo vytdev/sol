@@ -1,7 +1,8 @@
-#include "compile.h"
+#include "solc.h"
+#include "sol.h"
 #include "parser.h"
+#include "codegen.h"
 #include "lexer.h"
-#include "vm.h"
 #include <stdint.h>
 
 

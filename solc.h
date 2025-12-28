@@ -1,7 +1,7 @@
 /* front end */
 
-#ifndef sol_compile_h
-#define sol_compile_h 1
+#ifndef solc_h
+#define solc_h 1
 
 #include <stdint.h>
 
@@ -41,6 +41,8 @@ typedef struct solc {
 #define CSUCC  (0)
 #define CFAIL  (1)
 
+/* funcs defined in: compile.c */
+
 /**
  * initialize a compiler context.
  */
@@ -61,19 +63,4 @@ int solc_err (solc *C, token_t *tok, char *msg);
  */
 int solc_compile (solc *C);
 
-/**
- * emit bytes to code buffer.
- */
-int solcG_emit (solc *C, char *bytes, ulong cnt);
-
-/**
- * emit a single byte.
- */
-int solcG_emitbyte (solc *C, char byte);
-
-/**
- * emit a 64-bit value.
- */
-int solcG_emit64 (solc *C, uint64_t val);
-
-#endif /* sol_compile_h */
+#endif /* solc_h */
