@@ -57,7 +57,7 @@ void solc_seterrbuf (solc *C, compile_err *buf, int len);
 int solc_err (solc *C, token_t *tok, char *msg);
 
 /**
- * compile source into bytecode.
+ * compile source into bytecode. returns the number of errors.
  */
 int solc_compile (solc *C);
 

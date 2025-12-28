@@ -5,6 +5,10 @@
 #include <stdint.h>
 
 
+// parse hierarchy:
+// expr -> infix -> prefix -> postfix -> primary -> leaf
+
+
 int solcP_reference (solc *C)
 {
   token_t tok = solcL_consume(C);
@@ -29,15 +33,14 @@ int solcP_int (solc *C)
     if (val > UINT64_MAX / 10 || (val == UINT64_MAX / 10
         && digit > UINT64_MAX % 10))
       return solc_err(C, &tok,
-                      "syntax error: Integer too big to fit into 64-bits\n");
+          "syntax error: Integer too big to fit into 64-bits\n");
     val = val * 10 + digit;
   }
 
-  int err;
-  err = solcG_emitbyte(C, O_PUSH64);
-  if (err) return err;
-  err = solcG_emit64(C, val);
-  if (err) return err;
+  if (solcG_emitbyte(C, O_PUSH64) != CSUCC)
+    return CFAIL;
+  if (solcG_emit64(C, val) != CSUCC)
+    return CFAIL;
   return CSUCC;
 }
 
@@ -63,6 +66,60 @@ int solcP_primary (solc *C)
       return solc_err(C, &peek, "syntax error: Expected expression\n");
   }
 }
+
+
+/* unary operators */
+#define UNR_UNK     (0)     /* ???? */
+#define UNR_NEG     (1)     /* -v */
+#define UNR_PLS     (2)     /* +v */
+
+/* for converting unary op nums to inst opcode */
+static const int unrop2opc[] = {
+  [UNR_UNK] = O_NOP,
+  [UNR_NEG] = O_NEG,
+  [UNR_PLS] = O_NOP,    // doesn't map to any opcode
+};
+
+/*
+ * get unrop (UNR_*) based on token type (T_*)
+ */
+static int tok2unrop (int ttype)
+{
+  switch (ttype) {
+    case T_DASH:      return UNR_NEG;
+    case T_PLUS:      return UNR_PLS;
+    default:          return UNR_UNK;
+  }
+}
+
+
+int solcP_postfix (solc *C)
+{
+  return solcP_primary(C);  // no postfix ops yet
+}
+
+
+int solcP_prefix (solc *C)
+{
+  token_t peek = solcL_peek(C);
+  int op = tok2unrop(peek.type);
+  if (op == UNR_UNK)
+    return solcP_postfix(C);
+  solcL_consume(C);   // consume op token
+
+  // parse sub-unary exprs
+  if (solcP_prefix(C) != CSUCC)
+    return CFAIL;
+
+  // plus prefix is basically a no-op
+  if (op == UNR_PLS)
+    return CSUCC;
+
+  if (solcG_emitbyte(C, unrop2opc[op]) != CSUCC)
+    return CFAIL;
+  return CSUCC;
+}
+
 
 /* binary operators */
 #define BIN_UNK       (0)     /* what? */
@@ -111,10 +168,10 @@ static const struct binopinfo binops[] = {
 };
 
 
-int solcP_binary (solc *C, int min_prec)
+int solcP_infix (solc *C, int min_prec)
 {
   // parse initial lhs
-  if (solcP_primary(C) != CSUCC)
+  if (solcP_prefix(C) != CSUCC)
     return CFAIL;
 
   for (;;) {
@@ -131,12 +188,12 @@ int solcP_binary (solc *C, int min_prec)
     solcL_consume(C);   // consume op.
 
     // parse rhs
-    if (solcP_binary(C, info->prec + info->assoc) != CSUCC)
+    if (solcP_infix(C, info->prec + info->assoc) != CSUCC)
       return CFAIL;
 
     // the op instruction
-    int err = solcG_emitbyte(C, binop2opc[op]);
-    if (err) return err;
+    if (solcG_emitbyte(C, binop2opc[op]) != CSUCC)
+      return CFAIL;
   }
 
   return CSUCC;
@@ -145,5 +202,5 @@ int solcP_binary (solc *C, int min_prec)
 
 int solcP_expr (solc *C)
 {
-  return solcP_binary(C, 0);
+  return solcP_infix(C, 0);
 }

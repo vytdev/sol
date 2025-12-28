@@ -18,6 +18,7 @@ typedef struct sol sol;
 #define O_DIV       (5)     /* binary div */
 #define O_PUSH64    (6)     /* push 64-bit int */
 #define O_POP       (7)     /* pop the stack */
+#define O_NEG       (8)     /* unary negate */
 
 /* value type */
 typedef union {

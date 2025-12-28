@@ -41,6 +41,13 @@ int sol_pop (sol *T, tvalue_t *val)
   if ((err = sol_push(T, a)) != S_OK) return err; \
 } while (0)
 
+#define unary_int_op(op) do { \
+  tvalue_t tv; int err; \
+  if ((err = sol_pop(T, &tv)) != S_OK) return err; \
+  tv.v.intv = op tv.v.intv; \
+  if ((err = sol_push(T, tv)) != S_OK) return err; \
+} while (0)
+
 
 int sol_exec (sol *T)
 {
@@ -88,6 +95,9 @@ begin:
     }
     case O_POP:
       sol_pop(T, NULL);
+      break;
+    case O_NEG:
+      unary_int_op(-);
       break;
     default:
       return -S_EINST;

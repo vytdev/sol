@@ -42,23 +42,23 @@ int solc_err (solc *C, token_t *tok, char *msg)
     C->err[C->err_cnt].token = tok ? *tok : TOKEN_INIT;
   }
   C->err_cnt++;
-  return C->err_cnt;
+  return CFAIL;
 }
 
 
 int solc_compile (solc *C)
 {
   // could change in the future
-  int err = solcP_expr(C);
-  if (err) return err;
-  return solcG_emitbyte(C, O_HALT);
+  if (solcP_expr(C) == CSUCC)
+    solcG_emitbyte(C, O_HALT);
+  return C->err_cnt;
 }
 
 
 int solcG_emit (solc *C, char *bytes, ulong cnt)
 {
   if (C->err_cnt > 0)
-    return C->err_cnt;
+    return CFAIL;
   if (C->cpos + cnt > C->clen)
     return solc_err(C, NULL, "code gen: Ran out of memory\n");
   for (ulong i = 0; i < cnt; i++)
@@ -71,7 +71,7 @@ int solcG_emit (solc *C, char *bytes, ulong cnt)
 int solcG_emitbyte (solc *C, char byte)
 {
   if (C->err_cnt > 0)
-    return C->err_cnt;
+    return CFAIL;
   if (C->cpos + 1 > C->clen)
     return solc_err(C, NULL, "code gen: Ran out of memory\n");
   C->code[C->cpos++] = byte;

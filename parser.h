@@ -22,9 +22,19 @@ int solcP_int (solc *C);
 int solcP_primary (solc *C);
 
 /**
+ * parse postfix unary ops.
+ */
+int solcP_postfix (solc *C);
+
+/**
+ * parse prefix unary ops (i.e., negation, plus op).
+ */
+int solcP_prefix (solc *C);
+
+/**
  * parse binary expression (i.e., add, sub, mul, div).
  */
-int solcP_binary (solc *C, int min_prec);
+int solcP_infix (solc *C, int min_prec);
 
 /**
  * parse an expression (top-level).
