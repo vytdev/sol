@@ -3,7 +3,6 @@
 .*.swp
 
 # built files
+build/*.[od]
 libsol.a
 sol
-*.o
-*.d

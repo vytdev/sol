@@ -1,67 +1,94 @@
 # Sol.
 #
 
-CC=         gcc
-AR=         ar rcs
-RM=         rm -rf
+CWARNS= \
+  -Wshadow \
+  -Wundef \
+  -Wwrite-strings \
+  -Wdisabled-optimization \
+  -Wmissing-declarations \
+  # -pedantic
 
-STD=        gnu99
-CFLAGS=     -std=$(STD) -Wall -Wextra -MMD -MP
-LDFLAGS=
+MYCFLAGS= $(CWARNS) -std=c99
+MYLDFLAGS=
 
-LIB-SRC=        \
-	compile.c     \
-	lexer.c       \
-	parser_expr.c \
-	vm.c
-LIB-OBJ=$(LIB-SRC:.c=.o)
-LIB-DEP=$(LIB-SRC:.c=.d)
-LIB-TRG=libsol.a
+CC= gcc
+AR= ar rc
+RANLIB= ranlib
+RM= rm -rf
+MKDIR= mkdir -p
 
-EXC-SRC= \
-	main.c \
-	util.c
-EXC-OBJ=$(EXC-SRC:.c=.o)
-EXC-DEP=$(EXC-SRC:.c=.d)
-EXC-TRG=sol
+CFLAGS= -Wall -Wextra $(MYCFLAGS) -MMD -MP
+LDFLAGS= $(MYLDFLAGS)
 
-.PHONY: default build debug release clean distclean help
+## build file names
 
-default: release
-build: $(LIB-TRG) $(EXC-TRG)
+OUTD= build
 
-debug:    build
-debug:    CFLAGS+=  -g -D _DEBUG
-release:  build
-release:  CFLAGS+=  -O2
+LIB_C= compile.c lexer.c parser_expr.c vm.c
+LIB_O= $(LIB_C:%.c=$(OUTD)/%.o)
+LIB_D= $(LIB_O:.o=.d)
+LIB_T= libsol.a
 
--include $(LIB-DEP) $(EXC-DEP)
+SOL_C= main.c util.c
+SOL_O= $(SOL_C:%.c=$(OUTD)/%.o)
+SOL_D= $(SOL_O:.o=.d)
+SOL_T= sol
 
-$(LIB-TRG): $(LIB-OBJ)
-	$(AR) $@ $^
+ALL_O= $(LIB_O) $(SOL_O)
+ALL_D= $(LIB_D) $(SOL_D)
+ALL_T= $(LIB_T) $(SOL_T)
 
-$(EXC-TRG): $(EXC-OBJ) $(LIB-TRG)
-	$(CC) $(LDFLAGS) -o $@ $^
+.PHONY: all debug release ci test clean help echo
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $<
+all: $(ALL_T)
+debug release ci: all
+
+ci:
+	$(MAKE) test
+
+debug:    CFLAGS+= -Og -g
+release:  CFLAGS+= -O2 -DNDEBUG -march=native
+ci:       CFLAGS+= -Werror
+
+test: all
+	@echo 'No tests yet.'
 
 clean:
-	$(RM) $(LIB-OBJ) $(EXC-OBJ) $(LIB-TRG) $(EXC-TRG)
-
-distclean: clean
-	$(RM) $(LIB-DEP) $(EXC-DEP)
+	$(RM) $(OUTD) $(ALL_T)
 
 help:
 	@echo 'Sol Makefile'
-	@echo '  help         Show this help'
-	@echo '  clean        Delete built files'
-	@echo '  distclean    Clean including *.d'
-	@echo 'Build types'
-	@echo '  build        Plain build'
-	@echo '  default      Default build'
-	@echo '  debug        Debug build'
-	@echo '  release      Release build'
+	@echo '  help        Show this help'
+	@echo '  clean       Delete generated files'
+	@echo '  echo        Print make vars'
+	@echo '  test        Run tests'
 	@echo 'Build targets'
-	@echo '  libsol.a     Sol static lib'
-	@echo '  sol          Sol standalone rt'
+	@echo '  all         Default (plain) build'
+	@echo '  debug       For debugging'
+	@echo '  release     Optimized build'
+	@echo '  ci          For CI checking'
+
+echo:
+	@echo 'CC = $(CC)'
+	@echo 'AR = $(AR)'
+	@echo 'RANLIB = $(RANLIB)'
+	@echo 'RM = $(RM)'
+	@echo 'MKDIR = $(MKDIR)'
+	@echo 'MYCFLAGS = $(MYCFLAGS)'
+	@echo 'MYLDFLAGS = $(MYLDFLAGS)'
+
+$(LIB_T): $(LIB_O)
+	$(AR) $@ $^
+	$(RANLIB) $@
+
+$(SOL_T): $(SOL_O) $(LIB_T)
+	$(CC) $(LDFLAGS) -o $@ $^
+
+$(OUTD)/%.o: %.c | $(OUTD)
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+$(OUTD):
+	$(MKDIR) $@
+
+-include $(ALL_D)
