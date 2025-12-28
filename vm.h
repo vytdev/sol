@@ -55,7 +55,7 @@ struct sol {
 /*
  * initialize a sol state.
  */
-void sol_init (sol *T);
+void sol_init (sol *T, char *code, ulong clen);
 
 /*
  * push a tvalue onto the stack.

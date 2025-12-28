@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "util.h"
-#include "parser.h"
+#include "compile.h"
+#include "vm.h"
 
+
+#define CODESZ 8192
 
 int main (int argc, char **argv)
 {
@@ -18,14 +21,38 @@ int main (int argc, char **argv)
     return 1;
   }
 
-  parser_t parser;
-  solP_init(&parser, buf, len);
-  int err = solP_expr(&parser);
-  for (int i = 0; i < err; i++)
-    msgtok(&parser.err[i].token, &parser.lex, parser.err[i].msg);
-  printf("err cnt: %d\n", err);
+  char *code = (char*)malloc(CODESZ);
+  if (!code) {
+    free(buf);
+    fprintf(stderr, "%s: Could not allocate code buffer\n", argv[0]);
+    return 1;
+  }
 
-  solP_free(&parser);
+  // compile
+  compiler_t C;
+  solC_init(&C, buf, len, code, CODESZ);
+  int err = solC_compile(&C);
+  for (int i = 0; i < err; i++)
+    msgtok(&C.err[i].token, &C.lex, C.err[i].msg);
+  printf("compile err cnt: %d\n", err);
+  if (err != CSUCC) {
+    free(code);
+    free(buf);
+    return err;
+  }
+
+  // run
+  sol T;
+  sol_init(&T, code, C.cpos);
+  int stat = sol_exec(&T);
+  printf("exec stat: %d\n", stat);
+
+  // print result
+  tvalue_t tv;
+  sol_pop(&T, &tv);
+  printf("interp result: %ld\n", tv.v.intv);
+
+  free(code);
   free(buf);
   return 0;
 }

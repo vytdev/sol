@@ -2,10 +2,10 @@
 #include <stdlib.h>   /* for NULL. */
 
 
-void sol_init (sol *T)
+void sol_init (sol *T, char *code, ulong clen)
 {
-  T->code = NULL;
-  T->clen = 0;
+  T->code = code;
+  T->clen = clen;
   T->pc = 0;
   // temporary
   T->stlen = MAXSTACK;

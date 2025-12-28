@@ -1,22 +1,23 @@
 #include "parser.h"
+#include "vm.h"
 #include <stdint.h>
 
 
-int solP_reference (parser_t *P)
+int solP_reference (compiler_t *C)
 {
-  token_t tok = solL_consume(&P->lex);
+  token_t tok = solL_consume(&C->lex);
   if (tok.type != T_IDENTIFIER)
-    return solP_err(P, 0, &tok, "syntax error: Expected identifier\n");
+    return solC_err(C, &tok, "syntax error: Expected identifier\n");
   // TODO: codegen
-  return PSUCC;
+  return CSUCC;
 }
 
 
-int solP_int (parser_t *P)
+int solP_int (compiler_t *C)
 {
-  token_t tok = solL_consume(&P->lex);
+  token_t tok = solL_consume(&C->lex);
   if (tok.type != T_INTEGER)
-    return solP_err(P, 0, &tok, "syntax error: Expected an integer\n");
+    return solC_err(C, &tok, "syntax error: Expected an integer\n");
 
   // simply parse a base 10 uint. we don't care about the sign here
   uint64_t val = 0;
@@ -25,45 +26,38 @@ int solP_int (parser_t *P)
     // efficiently prevent overflow
     if (val > UINT64_MAX / 10 || (val == UINT64_MAX / 10
         && digit > UINT64_MAX % 10))
-      return solP_err(P, 0, &tok,
-             "syntax error: Integer too big to fit into 64-bits\n");
+      return solC_err(C, &tok,
+                      "syntax error: Integer too big to fit into 64-bits\n");
     val = val * 10 + digit;
   }
 
-  // TODO: codegen
-  return PSUCC;
+  solC_emitbyte(C, O_PUSH64);
+  solC_emit64(C, val);
+  return CSUCC;
 }
 
 
-int solP_primary (parser_t *P)
+int solP_primary (compiler_t *C)
 {
-  token_t peek = solL_peek(&P->lex);
+  token_t peek = solL_peek(&C->lex);
   switch (peek.type) {
     case T_IDENTIFIER:
-      return solP_reference(P);
+      return solP_reference(C);
     case T_INTEGER:
-      return solP_int(P);
+      return solP_int(C);
     case T_LPAREN: {
-      solL_consume(&P->lex);
-      if (solP_expr(P) != PSUCC)
-        return PFAIL;
-      peek = solL_consume(&P->lex);
+      solL_consume(&C->lex);
+      if (solP_expr(C) != CSUCC)
+        return CFAIL;
+      peek = solL_consume(&C->lex);
       if (peek.type != T_RPAREN)
-        return solP_err(P, 0, &peek,
-                        "syntax error: Expected ')' to close '('\n");
-      return PSUCC;
+        return solC_err(C, &peek, "syntax error: Expected ')' to close '('\n");
+      return CSUCC;
     }
     default:
-      return solP_err(P, 0, &peek, "syntax error: Expected expression\n");
+      return solC_err(C, &peek, "syntax error: Expected expression\n");
   }
 }
-
-
-#define BIN_UNK   (0)
-#define BIN_ADD   (1)
-#define BIN_SUB   (2)
-#define BIN_MUL   (3)
-#define BIN_DIV   (4)
 
 /*
  * get binop (BIN_*) based on token type (T_*)
@@ -96,15 +90,15 @@ static const struct binopinfo binops[] = {
 };
 
 
-int solP_binary (parser_t *P, int min_prec)
+int solP_binary (compiler_t *C, int min_prec)
 {
   // parse initial lhs
-  if (solP_primary(P) != PSUCC)
-    return PFAIL;
+  if (solP_primary(C) != CSUCC)
+    return CFAIL;
 
   for (;;) {
     // check if next token is a binary op.
-    token_t peek = solL_peek(&P->lex);
+    token_t peek = solL_peek(&C->lex);
     int op = tok2binop(peek.type);
     if (op == BIN_UNK)
       break;
@@ -113,20 +107,21 @@ int solP_binary (parser_t *P, int min_prec)
     const struct binopinfo *info = &binops[op];
     if (info->prec < min_prec)
       break;
-    solL_consume(&P->lex);   // consume op.
+    solL_consume(&C->lex);   // consume op.
 
     // parse rhs
-    if (solP_binary(P, info->prec + info->assoc) != PSUCC)
-      return PFAIL;
+    if (solP_binary(C, info->prec + info->assoc) != CSUCC)
+      return CFAIL;
 
-    // TODO: codegen (op instr)
+    // the op instruction
+    solC_emitbyte(C, solC_binop2opc[op]);
   }
 
-  return PSUCC;
+  return CSUCC;
 }
 
 
-int solP_expr (parser_t *P)
+int solP_expr (compiler_t *C)
 {
-  return solP_binary(P, 0);
+  return solP_binary(C, 0);
 }

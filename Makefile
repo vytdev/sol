@@ -10,8 +10,8 @@ CFLAGS=     -std=$(STD) -Wall -Wextra
 LDFLAGS=
 
 LIB-SRC=        \
+	compile.c     \
 	lexer.c       \
-	parser.c      \
 	parser_expr.c \
 	vm.c
 LIB-OBJ=$(LIB-SRC:.c=.o)
