@@ -83,7 +83,7 @@ begin:
         ((uint64_t)code[pc+6] << 48) |
         ((uint64_t)code[pc+7] << 56);
       sol_push(T, tv);
-      pc++;
+      pc += 8;
       break;
     }
     case O_POP:
