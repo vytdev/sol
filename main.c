@@ -21,6 +21,8 @@ int main (int argc, char **argv)
   parser_t parser;
   solP_init(&parser, buf, len);
   int err = solP_expr(&parser);
+  for (int i = 0; i < err; i++)
+    msgtok(&parser.err[i].token, &parser.lex, parser.err[i].msg);
   printf("err cnt: %d\n", err);
 
   solP_free(&parser);

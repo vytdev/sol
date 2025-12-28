@@ -4,48 +4,48 @@
 /**
  * increment the lexer
  */
-static inline void increment (lexer_t *lex, char ch)
+static inline void increment (lexer_t *L, char ch)
 {
-  lex->pos++;
-  lex->ln_off++;
+  L->pos++;
+  L->ln_off++;
   switch (ch) {
     case LF:
-      lex->line++;
-      lex->ln_off = 0;
+      L->line++;
+      L->ln_off = 0;
       /* fallthrough */
     case CR:
-      lex->col = 1;
+      L->col = 1;
       break;
     case TAB:
-      lex->col += TABSTOP - ((lex->col - 1) % TABSTOP);
+      L->col += TABSTOP - ((L->col - 1) % TABSTOP);
       break;
     default:
-      lex->col++;
+      L->col++;
   }
 }
 
 
 /* Loop condition for consuming sequences of chars. */
-#define for_ch(cond) (lex->pos < lex->len && (ch = lex->src[lex->pos], (cond)))
+#define for_ch(cond) (L->pos < L->len && (ch = L->src[L->pos], (cond)))
 
 
-token_t solL_tokenize (lexer_t *lex)
+token_t solL_tokenize (lexer_t *L)
 {
   char ch;
   while (1) {
     // skip initial whitespace
     while (for_ch(is_wspace(ch)))
-      increment(lex, ch);
+      increment(L, ch);
 
     token_t tok = TOKEN_INIT;
-    tok.pos = lex->pos;
-    tok.line = lex->line;
-    tok.col = lex->col;
-    tok.ln_off = lex->ln_off;
-    tok.start = &lex->src[lex->pos];
+    tok.pos = L->pos;
+    tok.line = L->line;
+    tok.col = L->col;
+    tok.ln_off = L->ln_off;
+    tok.start = &L->src[L->pos];
 
     // eof token
-    if (lex->pos >= lex->len) {
+    if (L->pos >= L->len) {
       tok.type = T_EOF;
       tok.len = 0;
       return tok;
@@ -54,7 +54,7 @@ token_t solL_tokenize (lexer_t *lex)
     // identifier token
     if (is_ident(ch)) {
       while (for_ch(is_ident(ch) || is_digit(ch))) {
-        increment(lex, ch);
+        increment(L, ch);
         tok.len++;
       } 
       tok.type = T_IDENTIFIER;
@@ -64,7 +64,7 @@ token_t solL_tokenize (lexer_t *lex)
     // integer token
     if (is_digit(ch)) {
       while (for_ch(is_digit(ch))) {
-        increment(lex, ch);
+        increment(L, ch);
         tok.len++;
       }
       tok.type = T_INTEGER;
@@ -81,14 +81,14 @@ token_t solL_tokenize (lexer_t *lex)
       case ')': tok.type = T_RPAREN;  break;
       default: goto unknown;
     }
-    increment(lex, ch);
+    increment(L, ch);
     tok.len++;
     return tok;
 
 unknown:
     // unknown token
     while (for_ch(!is_wspace(ch))) {
-      increment(lex, ch);
+      increment(L, ch);
       tok.len++;
     }
     tok.type = T_UNKNOWN;
@@ -97,35 +97,35 @@ unknown:
 }
 
 
-token_t solL_consume (lexer_t *lex)
+token_t solL_consume (lexer_t *L)
 {
-  if (lex->next.type == T_INVALID)
-    lex->curr = solL_tokenize(lex);
+  if (L->next.type == T_INVALID)
+    L->curr = solL_tokenize(L);
   else {
-    lex->curr = lex->next;
-    lex->next.type = T_INVALID;
+    L->curr = L->next;
+    L->next.type = T_INVALID;
   }
-  return lex->curr;
+  return L->curr;
 }
 
 
-token_t solL_peek (lexer_t *lex)
+token_t solL_peek (lexer_t *L)
 {
-  if (lex->next.type == T_INVALID)
-    lex->next = solL_tokenize(lex);
-  return lex->next;
+  if (L->next.type == T_INVALID)
+    L->next = solL_tokenize(L);
+  return L->next;
 }
 
 
-token_t solL_current (lexer_t *lex)
+token_t solL_current (lexer_t *L)
 {
-  if (lex->curr.type == T_INVALID) {
-    if (lex->next.type == T_INVALID)
-      lex->curr = solL_tokenize(lex);
+  if (L->curr.type == T_INVALID) {
+    if (L->next.type == T_INVALID)
+      L->curr = solL_tokenize(L);
     else {
-      lex->curr = lex->next;
-      lex->next.type = T_INVALID;
+      L->curr = L->next;
+      L->next.type = T_INVALID;
     }
   }
-  return lex->curr;
+  return L->curr;
 }

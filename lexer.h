@@ -46,21 +46,21 @@ struct lexer {
 /**
  * parse the next token.
  */
-token_t solL_tokenize (lexer_t *lex);
+token_t solL_tokenize (lexer_t *L);
 
 /**
  * returns the next token. steps the token stream
  */
-token_t solL_consume (lexer_t *lex);
+token_t solL_consume (lexer_t *L);
 
 /**
  * peek the next token but dont consume
  */
-token_t solL_peek (lexer_t *lex);
+token_t solL_peek (lexer_t *L);
 
 /**
  * returns the current token
  */
-token_t solL_current (lexer_t *lex);
+token_t solL_current (lexer_t *L);
 
 #endif /* sol_lexer_h */

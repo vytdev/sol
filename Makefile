@@ -12,13 +12,13 @@ LDFLAGS=
 LIB-SRC=        \
 	lexer.c       \
 	parser.c      \
-	parser_expr.c \
-	util.c
+	parser_expr.c
 LIB-OBJ=$(LIB-SRC:.c=.o)
 LIB-TRG=libsol.a
 
 EXC-SRC= \
-	main.c
+	main.c \
+	util.c
 EXC-OBJ=$(EXC-SRC:.c=.o)
 EXC-TRG=sol
 
