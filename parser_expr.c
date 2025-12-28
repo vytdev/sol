@@ -29,7 +29,7 @@ int solcP_int (solc *C)
   // simply parse a base 10 uint. we don't care about the sign here
   uint64_t val = 0;
   for (uint i = 0; i < tok.len; i++) {
-    char digit = tok.start[i] - '0';
+    unsigned char digit = tok.start[i] - '0';
     // efficiently prevent overflow
     if (val > UINT64_MAX / 10 || (val == UINT64_MAX / 10
         && digit > UINT64_MAX % 10))
