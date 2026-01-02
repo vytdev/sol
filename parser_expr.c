@@ -1,5 +1,5 @@
 #include "solc.h"
-#include "sol.h"
+#include "opcodes.h"
 #include "parser.h"
 #include "codegen.h"
 #include "lexer.h"
@@ -38,10 +38,7 @@ int solcP_int (solc *C)
     val = val * 10 + digit;
   }
 
-  if (solcG_emitbyte(C, O_PUSH64) != CSUCC)
-    return CFAIL;
-  if (solcG_emit64(C, val) != CSUCC)
-    return CFAIL;
+  solcG_push64(C, val);
   return CSUCC;
 }
 

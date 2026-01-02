@@ -1,7 +1,7 @@
 /* codegen */
 
-#ifndef solcG_h
-#define solcG_h 1
+#ifndef sol_codegen_h
+#define sol_codegen_h 1
 
 #include "solc.h"
 
@@ -23,4 +23,9 @@ int solcG_emitbyte (solc *C, char byte);
  */
 int solcG_emit64 (solc *C, uint64_t val);
 
-#endif /* solcG_h */
+/**
+ * make a push64 instruction
+ */
+int solcG_push64 (solc *C, uint64_t val);
+
+#endif /* sol_codegen_h */

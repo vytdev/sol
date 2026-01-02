@@ -1,5 +1,5 @@
 #include "solc.h"
-#include "sol.h"
+#include "opcodes.h"
 #include "parser.h"
 #include "codegen.h"
 #include "lexer.h"
@@ -92,4 +92,12 @@ int solcG_emit64 (solc *C, uint64_t val)
   buf[6] = (val >> 48) & 0xff;
   buf[7] = (val >> 56) & 0xff;
   return solcG_emit(C, buf, 8);
+}
+
+
+int solcG_push64 (solc *C, uint64_t val)
+{
+  if (solcG_emitbyte(C, O_PUSH64) != CSUCC)
+    return CFAIL;
+  return solcG_emit64(C, val);
 }

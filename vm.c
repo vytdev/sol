@@ -1,4 +1,5 @@
 #include "sol.h"
+#include "opcodes.h"
 #include <stdlib.h>   /* for NULL. */
 
 

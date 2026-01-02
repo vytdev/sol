@@ -1,7 +1,7 @@
 /* utility */
 
-#ifndef util_h
-#define util_h 1
+#ifndef sol_util_h
+#define sol_util_h 1
 
 #include "solc.h"
 #include <stddef.h>
@@ -40,4 +40,4 @@ void msgtok (solc *C, token_t *tok, const char *fmt, ...);
  */
 NORETRN void fatal_err (char *fmt, ...);
 
-#endif /* util_h */
+#endif /* sol_util_h */
